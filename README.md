@@ -31,7 +31,6 @@ are in each event's README.
 ├── README.md             ← you are here
 ├── CONTRIBUTING.md       ← general submission process (all events)
 ├── SECURITY.md           ← what not to commit + how to report a leak
-├── LICENSE
 ├── .gitignore            ← repo-wide ignore rules (secrets, build output, …)
 ├── .gitleaks.toml        ← secret-scanning rules (incl. crypto keys)
 ├── .github/              ← CI, CODEOWNERS, PR/issue templates
@@ -44,5 +43,6 @@ are in each event's README.
 
 ## License
 
-Repository scaffolding is licensed under [MIT](LICENSE). **Each submission remains the
-property of its authors** — teams may include their own `LICENSE` file inside their folder.
+No repository-wide license is applied — **each submission remains the property of its
+authors**. Teams may include their own `LICENSE` file inside their folder to set terms for
+their code.
