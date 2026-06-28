@@ -1,0 +1,67 @@
+# ─────────────────────────────────────────────────────────────
+# Secrets & credentials — NEVER commit these (see SECURITY.md)
+# ─────────────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+*.local
+secrets.*
+credentials.*
+
+# Keys & certificates
+*.pem
+*.key
+*.p12
+*.pfx
+*.keystore
+id_rsa
+id_ed25519
+*.ppk
+
+# Crypto wallets / seed material
+wallet.json
+keystore/
+*.wallet
+*.mnemonic
+*seed-phrase*
+*.coldkey
+*.hotkey
+
+# ─────────────────────────────────────────────────────────────
+# Dependencies & build output
+# ─────────────────────────────────────────────────────────────
+node_modules/
+dist/
+build/
+.next/
+out/
+target/
+*.egg-info/
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ─────────────────────────────────────────────────────────────
+# Logs, caches, misc
+# ─────────────────────────────────────────────────────────────
+*.log
+.cache/
+coverage/
+.coverage
+tmp/
+temp/
+
+# ─────────────────────────────────────────────────────────────
+# Editor & OS noise
+# ─────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*~

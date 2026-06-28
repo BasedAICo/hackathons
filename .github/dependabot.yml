@@ -1,0 +1,9 @@
+# Keeps the repo's own tooling (GitHub Actions) up to date and patched.
+# Participant submissions use arbitrary stacks, so we don't auto-scan every
+# subfolder — teams are responsible for their own dependencies.
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"

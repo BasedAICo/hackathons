@@ -1,0 +1,37 @@
+# gitleaks configuration — used by the secret-scan CI workflow.
+# Extends the built-in ruleset (which already catches PEM private keys, generic
+# API keys, cloud provider tokens, etc.) with crypto-specific rules, since several
+# event sponsors are web3 projects.
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "evm-hex-private-key"
+description = "EVM / hex private key (64 hex chars near a key-like keyword)"
+regex = '''(?i)(?:priv(?:ate)?[_-]?key|secret[_-]?key|wallet[_-]?key)["'\s:=]{1,12}(?:0x)?[0-9a-fA-F]{64}\b'''
+tags = ["key", "crypto"]
+
+[[rules]]
+id = "bip39-mnemonic"
+description = "Possible BIP-39 seed / recovery phrase (12+ words near a mnemonic keyword)"
+regex = '''(?i)(?:mnemonic|seed[_-]?phrase|recovery[_-]?phrase)["'\s:=]{1,16}(?:[a-z]+[\s,]+){11,}[a-z]+'''
+tags = ["secret", "crypto"]
+
+[[rules]]
+id = "solana-base58-secret-array"
+description = "Solana secret key exported as a byte array"
+regex = '''(?i)(?:secret[_-]?key|private[_-]?key)["'\s:=]{1,12}\[\s*(?:\d{1,3}\s*,\s*){31,}\d{1,3}\s*\]'''
+tags = ["key", "crypto"]
+
+# Don't scan example/placeholder files for secrets.
+[allowlist]
+description = "Ignore documented placeholders"
+paths = [
+  '''\.env\.example$''',
+  '''(^|/)_TEMPLATE/''',
+]
+regexes = [
+  '''your-key-here''',
+  '''do-not-put-a-real-key-here''',
+]

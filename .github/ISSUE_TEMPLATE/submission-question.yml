@@ -1,0 +1,27 @@
+name: Submission question
+description: Ask about submitting, the rules, or the event
+title: "[Question] "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for asking! For the full submission process, see
+        [CONTRIBUTING.md](../blob/main/CONTRIBUTING.md).
+        **Do not include any secrets** (API keys, wallet keys, seed phrases) in this issue.
+  - type: dropdown
+    id: event
+    attributes:
+      label: Which event?
+      options:
+        - UK-AI-Agent-EP5
+        - Other / general
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question
+      placeholder: What would you like to know?
+    validations:
+      required: true
