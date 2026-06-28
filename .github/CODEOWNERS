@@ -1,0 +1,19 @@
+# Code owners are auto-requested for review on matching PRs.
+# When combined with branch protection ("Require review from Code Owners"),
+# this ensures a BasedAI maintainer reviews every change to shared files
+# and every submission before it merges.
+#
+# TODO(maintainer): replace the placeholder team with your real GitHub team or
+# usernames, e.g.  @basedai/hackathon-reviewers  or  @alice @bob
+
+# Everything (incl. all submissions) is reviewed by the hackathon team.
+*                       @BasedAI/hackathon-reviewers
+
+# Shared repo infrastructure — keep ownership tight.
+/.github/               @BasedAI/hackathon-reviewers
+/README.md              @BasedAI/hackathon-reviewers
+/CONTRIBUTING.md        @BasedAI/hackathon-reviewers
+/SECURITY.md            @BasedAI/hackathon-reviewers
+/LICENSE                @BasedAI/hackathon-reviewers
+/.gitignore             @BasedAI/hackathon-reviewers
+/.gitleaks.toml         @BasedAI/hackathon-reviewers

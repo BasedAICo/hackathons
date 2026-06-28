@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🔒 Report a security issue or leaked secret
+    url: https://github.com/BasedAI/hackathons/security/advisories/new
+    about: Do NOT open a public issue for secrets or vulnerabilities — report privately. See SECURITY.md.
+  - name: 📖 Read the submission guide
+    url: https://github.com/BasedAI/hackathons/blob/main/CONTRIBUTING.md
+    about: Full step-by-step instructions for submitting your project.
