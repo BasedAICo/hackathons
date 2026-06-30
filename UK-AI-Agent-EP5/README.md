@@ -19,9 +19,9 @@ BioVault is submitted for the BasedAI track of UK AI Agent Hackathon EP.5.
 
 ## What BioVault does
 
-Deterministic, LLM-free capability enforcement for shared artifact memory. Prevents AI agents from leaking payroll-sensitive lineage into marketing answers — with propagating revocation when a source document is revoked.
+A **permission gate + demo dashboard** for shared company artifacts — not an AI agent. FastAPI checks capability grants and lineage before decrypting content; React UI walks through the SME payroll-leakage demo.
 
-**Default demo:** Marketing is denied the Q3 Growth Margin Report (payroll-mixed derived artifact). Owner revokes Payroll Salary Register → Q3 report quarantined → Finance denied. Zero model tokens in the permission path.
+**Default demo:** Marketing denied Q3 Growth Margin Report → owner revokes payroll → report quarantined → Finance denied. All audited.
 
 ## Key dates
 
@@ -50,6 +50,6 @@ cd frontend && npm install && npm run dev
 
 Open `http://localhost:5173`, click **Seed / Reset Demo**, walk through [docs/DEMO_SCRIPT.md](../docs/DEMO_SCRIPT.md).
 
-## Open-weight compliance
+## Models
 
-No closed or proprietary models in the permission path. BioVault is model-agnostic — any open-weight agent runtime integrates via `POST /query`.
+No LLM is integrated in this repo. Permission checks are Python/SQL only. `POST /query` is the hook for a future external agent — no Qwen/Llama/Mistral wiring yet.
