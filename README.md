@@ -6,7 +6,7 @@ Deterministic, lineage-aware, LLM-free capability enforcement for shared artifac
 
 Built for the **BasedAI Enterprise Memory Governance at Scale** track · [UK AI Agent Hackathon EP.5](UK-AI-Agent-EP5/) · Imperial College London, June–July 2026.
 
-**Team:** BioVault · [@pkaysantana](https://github.com/pkaysantana) (Don Santana)  
+**Team:** BioVault · [@pkaysantana](https://github.com/pkaysantana) (Don Aborah)  
 **Official submission PR:** [BasedAICo/hackathons#3](https://github.com/BasedAICo/hackathons/pull/3)
 
 > **Classification:** Educational prototype / hackathon MVP. Not validated scientific logic, clinical decision support, or a regulated medical device.
