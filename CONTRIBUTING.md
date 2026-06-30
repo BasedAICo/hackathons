@@ -1,39 +1,60 @@
-# Contributing / Submitting a Project
+# Contributing to BioVault
 
-Thanks for taking part! This repo hosts multiple hackathon events. The submission
-process below is the same for every event — event-specific rules (theme, bounty,
-deadline, judging) live in each event's `README.md`.
+BioVault is a hackathon MVP for the BasedAI Enterprise Memory Governance track. This guide covers local development and keeping the official submission folder in sync.
 
-## Submission process (PR-per-team)
+## Development setup
 
-1. **Fork** this repository to your own GitHub account.
-2. In your fork, find the event directory you're submitting to (e.g. `UK-AI-Agent-EP5/`).
-3. **Copy** `<event>/submissions/_TEMPLATE/` to `<event>/submissions/<your-team-name>/`.
-   - Use a lowercase, hyphenated team name, e.g. `team-rocket`.
-4. Build your project inside that folder and fill in its `README.md`.
-5. Commit and push to your fork, then open a **Pull Request** into `main` of this repo.
-6. A BasedAI reviewer will be requested automatically. Address any feedback and we'll merge.
+```powershell
+# Backend
+cd backend
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements-dev.txt
+uvicorn app.main:app --reload
+
+# Frontend (separate terminal)
+cd frontend
+npm install
+npm run dev
+```
+
+Run tests before pushing:
+
+```powershell
+cd backend
+python -m pytest -q
+```
+
+## Project structure
+
+| Path | Purpose |
+|---|---|
+| `backend/app/main.py` | FastAPI permission engine, seed data, audit |
+| `frontend/src/App.tsx` | Demo dashboard UI |
+| `docs/` | Architecture, demo script, deployment |
+| `UK-AI-Agent-EP5/submissions/biovault/` | Official hackathon submission copy for [BasedAICo/hackathons PR #3](https://github.com/BasedAICo/hackathons/pull/3) |
+
+## Hackathon submission workflow
+
+The upstream PR into [BasedAICo/hackathons](https://github.com/BasedAICo/hackathons) must **only** change files under `UK-AI-Agent-EP5/submissions/biovault/`.
+
+After editing code at the repo root, sync the submission folder before updating the upstream PR:
+
+```powershell
+$src = "."
+$dst = "UK-AI-Agent-EP5/submissions/biovault"
+robocopy $src $dst /E /XD .git node_modules .venv dist __pycache__ .pytest_cache .vercel UK-AI-Agent-EP5 /XF .env .env.local biovault.db README.md
+# Keep the judge-facing README in the submission folder — do not overwrite it with root README
+```
+
+Then commit and push branch `submit/biovault` to update [PR #3](https://github.com/BasedAICo/hackathons/pull/3).
 
 ## Rules
 
-- ✅ **Only touch your own team folder.** PRs that modify other teams' folders or the
-  repo's shared files (root README, `.github/`, etc.) will be asked to change.
-- ✅ **One folder per team**, named in lowercase-hyphenated form.
-- ✅ Your folder's `README.md` must be filled in (see the template) — judges rely on it.
-- ✅ Submit **before the event deadline** (see the event README). Late PRs may not be judged.
-- 🚫 **Never commit secrets.** No API keys, no `.env` files, no wallet **private keys or
-  seed phrases**. Push protection and CI secret scanning will block these — but the safest
-  thing is to never add them. See [SECURITY.md](SECURITY.md).
+- Never commit secrets — no `.env`, API keys, or wallet private keys. Use `.env.example` files.
+- Keep the submission folder `README.md` judge-focused (what it does, demo, how to run, architecture, open-weight models).
+- Run `pytest` before pushing.
 
-## Local checklist before opening a PR
+## Questions
 
-- [ ] My code is inside `<event>/submissions/<my-team>/` and nowhere else.
-- [ ] I included a `.env.example` with placeholder values — **not** a real `.env`.
-- [ ] I searched my diff for keys, tokens, mnemonics, and `0x…` private keys.
-- [ ] My folder `README.md` explains what it does, how to run it, and includes a demo link.
-- [ ] `git log` and the diff contain no secrets, even in earlier commits.
-
-## Questions?
-
-Open an issue using the **"Submission question"** template, or ask a BasedAI mentor at the
-event.
+Open an issue on this repo or ask a BasedAI mentor at the event.

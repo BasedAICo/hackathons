@@ -17,9 +17,9 @@ A secondary **biotech / AI science** scenario (pharma R&D, adverse-event revocat
 ## Demo
 
 - 🎥 Video: _Add before Demo Day_
-- 🌐 Live demo: Deploy via Vercel Services — see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) (`vercel.json` at repo root). After deploy, click **Seed / Reset Demo** once.
+- 🌐 Live demo: Deploy via Vercel Services — see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md). After deploy, click **Seed / Reset Demo** once.
 - 🖼️ Screenshots: Run locally and capture the SME payroll-leakage flow (Steps 1–8 in [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md))
-- 📦 Standalone repo: [github.com/pkaysantana/BioVault](https://github.com/pkaysantana/BioVault)
+- 📦 Repo: [github.com/pkaysantana/hackathons](https://github.com/pkaysantana/hackathons)
 
 ## How to run it
 
@@ -104,7 +104,7 @@ Full architecture, BasedAI compliance matrix, and API reference: [docs/ARCHITECT
 
 ## License
 
-MIT — see submission authors. Educational prototype / hackathon MVP; not validated clinical decision support or a regulated medical device.
+MIT — BioVault team. Educational prototype / hackathon MVP; not validated clinical decision support or a regulated medical device.
 
 ---
 

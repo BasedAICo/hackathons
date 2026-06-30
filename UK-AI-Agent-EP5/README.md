@@ -1,62 +1,55 @@
-# UK AI Agent Hackathon EP.5 — BasedAI Track
+# BioVault — UK AI Agent Hackathon EP.5
 
-> **Building the Future of Autonomous Agents**
-> 28 June – 4 July 2026 · Imperial College London · winners showcase at the House of Lords (Sept 2026)
+**BasedAI track:** Enterprise Memory Governance at Scale  
+**Team:** BioVault · [@pkaysantana](https://github.com/pkaysantana)  
+**Dates:** 28 June – 4 July 2026 · Imperial College London
 
-Welcome! This directory is where teams submit projects for the **BasedAI track** of the
-UK AI Agent Hackathon EP.5.
+---
 
-<!-- TODO(maintainer): confirm/replace the bounty, judging, and prize details below. -->
+## Submission
 
-## 🎯 The BasedAI bounty
+BioVault is submitted for the BasedAI track of UK AI Agent Hackathon EP.5.
 
-<!-- TODO(maintainer): describe the BasedAI track challenge, what to build, any required
-     use of BasedAI tech/APIs, and the prize. -->
+| Item | Link |
+|---|---|
+| **Project code** | [../backend](../backend) · [../frontend](../frontend) (repo root) |
+| **Official submission folder** | [`submissions/biovault/`](submissions/biovault/) |
+| **Judge README** | [`submissions/biovault/README.md`](submissions/biovault/README.md) |
+| **Upstream PR** | [BasedAICo/hackathons#3](https://github.com/BasedAICo/hackathons/pull/3) |
 
-_Bounty details to be confirmed — check back or ask a BasedAI mentor at the event._
+## What BioVault does
 
-## 🗓️ Key dates
+Deterministic, LLM-free capability enforcement for shared artifact memory. Prevents AI agents from leaking payroll-sensitive lineage into marketing answers — with propagating revocation when a source document is revoked.
+
+**Default demo:** Marketing is denied the Q3 Growth Margin Report (payroll-mixed derived artifact). Owner revokes Payroll Salary Register → Q3 report quarantined → Finance denied. Zero model tokens in the permission path.
+
+## Key dates
 
 | Date | Milestone |
-| ---- | --------- |
-| 28 Jun | Opening keynotes & panels |
-| 29–30 Jun | Workshops & mentorship |
-| 1–3 Jul | Build & submit |
-| **3 Jul (end of day)** | **Submission deadline** <!-- TODO: confirm exact time/timezone --> |
-| 4 Jul | Demo Day & finals |
+|---|---|
+| **3 Jul (end of day)** | Submission deadline |
+| **4 Jul** | Demo Day & finals |
 
-## 🏆 Judging criteria
-
-<!-- TODO(maintainer): finalize. Suggested starting rubric: -->
+## Judging criteria (BasedAI track)
 
 | Criterion | Weight |
-| --------- | ------ |
+|---|---|
 | Autonomy & technical execution | 30% |
 | Innovation / originality | 25% |
 | Use of BasedAI / sponsor tech | 20% |
 | Real-world usefulness & impact | 15% |
 | Demo & presentation | 10% |
 
-## 📥 How to submit
+## Quick start
 
-1. **Fork** this repository.
-2. Copy [`submissions/_TEMPLATE/`](submissions/_TEMPLATE/) to `submissions/<your-team-name>/`
-   (lowercase, hyphenated, e.g. `team-rocket`).
-3. Build your project in that folder and fill in its `README.md`.
-4. Open a **Pull Request** into `main`. Only touch your own team folder.
-
-Full instructions: [../CONTRIBUTING.md](../CONTRIBUTING.md).
-
-## 🔒 Before you submit
-
-This is a **public repo**. Never commit API keys, `.env` files, or — given the web3
-sponsors — **wallet private keys or seed phrases**. Use a fresh throwaway wallet for any
-on-chain work. See [../SECURITY.md](../SECURITY.md).
-
-## 📂 Submissions
-
+```powershell
+cd backend && pip install -r requirements-dev.txt && uvicorn app.main:app --reload
+# new terminal:
+cd frontend && npm install && npm run dev
 ```
-submissions/
-├── _TEMPLATE/      ← copy this to start
-└── <your-team>/    ← your project goes here
-```
+
+Open `http://localhost:5173`, click **Seed / Reset Demo**, walk through [docs/DEMO_SCRIPT.md](../docs/DEMO_SCRIPT.md).
+
+## Open-weight compliance
+
+No closed or proprietary models in the permission path. BioVault is model-agnostic — any open-weight agent runtime integrates via `POST /query`.
