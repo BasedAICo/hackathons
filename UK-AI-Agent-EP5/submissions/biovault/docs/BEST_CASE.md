@@ -104,7 +104,7 @@ What judges **see**:
 
 ### Not the best case (wrong direction)
 
-- Payroll / marketing / SME narrative anywhere user-facing
+- Non-biotech demo narratives (outside Phase II readiness, CRO handoffs, regulatory summaries, or clinical lineage) anywhere user-facing
 - Claiming LLM integration that isn't wired up
 - Building features unrelated to AI science memory governance
 

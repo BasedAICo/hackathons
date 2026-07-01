@@ -27,7 +27,7 @@ Before you ship anything, ask:
 | Demo | Phase II memo → CRO deny → adverse-event revoke |
 | CRO denial shown | External CRO denied Phase II memo, no plaintext |
 | Revocation shown | adverse_event_memo revoke quarantines Phase II memo |
-| No payroll/marketing narrative | None in UI, docs, tests, or seed |
+| Biotech-only narrative | No non-science examples in UI, docs, tests, or seed |
 | What track is this? | BasedAI Enterprise Memory Governance — via scientific artifact lineage |
 
 ---
@@ -35,11 +35,11 @@ Before you ship anything, ask:
 ## Restore identity
 
 - [x] **Default seed → biotech only** — `POST /seed`; no scenario switcher
-- [x] **README** — lineage-secured memory for AI science agents; no SME section
+- [x] **README** — lineage-secured memory for AI science agents; biotech-only framing
 - [x] **DEMO_SCRIPT.md** — biotech 8-step script only
 - [x] **ARCHITECTURE.md** — biotech worked example only
 - [x] **UI hero copy** — AI science; no scenario switcher
-- [x] **Remove SME tests and seed** — biotech tests only
+- [x] **Biotech-only tests and seed** — no non-science scenario coverage
 
 ---
 
