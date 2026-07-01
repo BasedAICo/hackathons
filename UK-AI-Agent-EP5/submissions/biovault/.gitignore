@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.uv-cache/
+.uv-python/
+uv.lock
+
+# BioVault local persistence
+backend/biovault.db
+*.db
+
+# Node
+node_modules/
+dist/
+
+# Local environment
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Local deploy metadata
+.vercel/

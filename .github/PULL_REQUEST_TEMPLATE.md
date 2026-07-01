@@ -1,24 +1,17 @@
-<!--
-Submitting a hackathon project? Thanks! Please fill this in.
-See CONTRIBUTING.md for the full process.
--->
+## BioVault submission update
 
-## Submission
-
-- **Event:** <!-- e.g. UK-AI-Agent-EP5 -->
-- **Team name:** <!-- matches your folder name, e.g. team-rocket -->
-- **Team members:** <!-- @github-handles -->
-- **One-line description:**
-- **Demo / video link:**
+- **Event:** UK-AI-Agent-EP5
+- **Team name:** biovault
+- **Team members:** @pkaysantana (Don Santana)
+- **One-line description:** LLM-free capability enforcement that stops AI agents leaking payroll-sensitive lineage into marketing answers
+- **Demo / video link:** _Add before Demo Day_
 
 ## Checklist
 
-- [ ] My changes are **only** inside `<event>/submissions/<my-team>/`.
-- [ ] My folder's `README.md` is filled in (what it does, how to run it, demo link).
-- [ ] I included a `.env.example` — **no real `.env` or credentials** are committed.
-- [ ] **No secrets** anywhere in the diff or history: API keys, tokens, wallet
-      **private keys**, or seed / recovery phrases.
-- [ ] I'm submitting before the event deadline.
+- [ ] My changes are **only** inside `UK-AI-Agent-EP5/submissions/biovault/`.
+- [ ] Submission `README.md` is filled in (what it does, how to run it, demo link, open-weight models).
+- [ ] `.env.example` files included — **no real `.env` or credentials** committed.
+- [ ] **No secrets** in the diff: API keys, tokens, wallet private keys, or seed phrases.
+- [ ] Submitting before **3 Jul** deadline.
 
-> ⚠️ This is a public repo. A leaked key or seed phrase is compromised the instant it's
-> pushed — rotate/abandon it immediately if that happens. See SECURITY.md.
+> ⚠️ Public repo. Rotate/abandon any leaked secret immediately. See SECURITY.md.
