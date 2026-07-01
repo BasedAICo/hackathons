@@ -8,48 +8,28 @@
 
 ## Submission
 
-BioVault is submitted for the BasedAI track of UK AI Agent Hackathon EP.5.
-
 | Item | Link |
 |---|---|
-| **Project code** | [../backend](../backend) · [../frontend](../frontend) (repo root) |
-| **Official submission folder** | [`submissions/biovault/`](submissions/biovault/) |
+| **Project code** | [../backend](../backend) · [../frontend](../frontend) |
+| **Submission folder** | [`submissions/biovault/`](submissions/biovault/) |
 | **Judge README** | [`submissions/biovault/README.md`](submissions/biovault/README.md) |
 | **Upstream PR** | [BasedAICo/hackathons#3](https://github.com/BasedAICo/hackathons/pull/3) |
 
 ## What BioVault does
 
-A **permission gate + demo dashboard** for shared company artifacts — not an AI agent. FastAPI checks capability grants and lineage before decrypting content; React UI walks through the SME payroll-leakage demo.
+**Governance for AI science memory** — capability-secured artifact store for pharma R&D. Derived Phase II memos, adverse-event revocation, external CRO boundaries, full audit. LLM-free permission path.
 
-**Default demo:** Marketing denied Q3 Growth Margin Report → owner revokes payroll → report quarantined → Finance denied. All audited.
-
-## Key dates
-
-| Date | Milestone |
-|---|---|
-| **3 Jul (end of day)** | Submission deadline |
-| **4 Jul** | Demo Day & finals |
-
-## Judging criteria (BasedAI track)
-
-| Criterion | Weight |
-|---|---|
-| Autonomy & technical execution | 30% |
-| Innovation / originality | 25% |
-| Use of BasedAI / sponsor tech | 20% |
-| Real-world usefulness & impact | 15% |
-| Demo & presentation | 10% |
+**Demo Day story:** BVK-14 biotech scenario (6 steps). SME payroll available as cross-industry proof.
 
 ## Quick start
 
 ```powershell
 cd backend && pip install -r requirements-dev.txt && uvicorn app.main:app --reload
-# new terminal:
 cd frontend && npm install && npm run dev
 ```
 
-Open `http://localhost:5173`, click **Seed / Reset Demo**, walk through [docs/DEMO_SCRIPT.md](../docs/DEMO_SCRIPT.md).
+Open `http://localhost:5173` — [docs/DEMO_SCRIPT.md](../docs/DEMO_SCRIPT.md)
 
 ## Models
 
-No LLM is integrated in this repo. Permission checks are Python/SQL only. `POST /query` is the hook for a future external agent — no Qwen/Llama/Mistral wiring yet.
+No LLM integrated. Permission checks are Python/SQL only. `POST /query` for future external agents.

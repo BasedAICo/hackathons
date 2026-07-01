@@ -1,86 +1,65 @@
 # BioVault
 
 **Team:** BioVault  
-**Members:** [@pkaysantana](https://github.com/pkaysantana) (Don Santana)  
+**Members:** [@pkaysantana](https://github.com/pkaysantana) (Don Aborah)  
 **Event/Track:** UK-AI-Agent-EP5 — BasedAI track (Enterprise Memory Governance at Scale)
 
 ## What it does
 
-Company memory systems produce **derived documents** (margin reports, summaries) built from **sensitive sources** (payroll, contracts). Role-based access control cannot answer: *should Marketing's agent be allowed to retrieve a report that was derived from payroll, even if Marketing never saw the payroll file directly?*
+BioVault governs **AI science / biotech R&D memory**: shared artifacts (toxicity reports, adverse-event memos, SAR tables) from which AI agents derive clinical memos. Role-based access cannot answer: *should an external CRO's agent retrieve a Phase II readiness memo derived from a source we just revoked for data integrity?*
 
-BioVault implements a **permission gate** for a shared artifact store:
+BioVault implements a **permission gate**:
 
-- Access is granted by explicit **capability** on each `(principal, artifact, operation)` — not by team role alone
-- **Lineage** records which sources a derived artifact was built from
-- **Revoking** a source quarantines every active derived artifact that included it
-- Every allow/deny is **audited** with `request_id`, reason, and latency
+- **Capability** per `(principal, artifact, operation)` — not role alone
+- **Lineage** on every derived artifact
+- **Revocation** quarantines all derived descendants (BFS)
+- **Audit** on every allow/deny with `request_id`
 
-This repo does **not** include an AI agent or LLM. It is a FastAPI backend + React demo UI that proves the gate works. `POST /query` is the endpoint an external agent would call before passing content to any model.
+No LLM in the permission path. FastAPI + React demo UI. `POST /query` is the hook for external agents.
 
-**Default demo:** Marketing is denied the Q3 Growth Margin Report (derived from payroll). Owner revokes payroll → report quarantined → Finance denied too.
+**Default demo (BVK-14):** CEO reads Phase II memo → CRO **denied** → Regulatory allowed → CEO revokes adverse-event memo → Phase II memo **quarantined**.
 
-**Secondary demo:** Biotech/pharma scenario via `POST /seed?scenario=biotech` or the UI scenario switcher.
+**Cross-industry:** SME payroll scenario via UI switcher or `POST /seed?scenario=sme` — same engine.
 
 ## Demo
 
-- 🎥 Video: _not yet recorded_
-- 🌐 Live demo: _not yet deployed_ — see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
-- 🖼️ Screenshots: run locally, walk through [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md)
+- 🎥 Video: _not yet recorded_ (record biotech walkthrough)
+- 🌐 Live demo: _not yet deployed_ — [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
+- 🖼️ Screenshots: CRO deny, quarantine badge, audit log — from biotech flow
 
 ## How to run it
 
-**Prerequisites:** Python 3.11+, Node.js 18+, npm
-
 ```powershell
-cd backend
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements-dev.txt
-uvicorn app.main:app --reload
-
-# new terminal:
-cd frontend
-npm install
-npm run dev
+cd backend && pip install -r requirements-dev.txt && uvicorn app.main:app --reload
+cd frontend && npm install && npm run dev
 ```
 
-Open `http://localhost:5173` → **Seed / Reset Demo** → follow the step guide.
-
-```powershell
-cd backend && python -m pytest -q   # 20 tests
-```
+Open `http://localhost:5173` — biotech seeds on load. `python -m pytest -q` in backend.
 
 ## How it works
 
 ```
-Demo user (React UI) or external caller
-        │
-        │  GET /artifacts/{id}  or  POST /query
-        │  Authorization: Bearer <token from /seed>
+Caller (UI or POST /query) + Bearer token
         ▼
-FastAPI
-        ├─ resolve_principal()     SHA-256(token) lookup
-        ├─ evaluate_access()       SQL grant check + lineage integrity
-        ├─ log_audit()             every decision logged
-        └─ decrypt content         only on allow
+FastAPI — resolve_principal → evaluate_access → log_audit → decrypt if allow
         ▼
-SQLite — users, artifacts, capability_grants, lineage_edges, audit_events
+SQLite — artifacts, grants, lineage_edges, audit_events
 ```
 
-No LLM runs anywhere in this path.
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md)
 
 ## Tech & sponsor APIs used
 
-- **Models / LLMs:** None — permission checks are deterministic Python/SQL. No open-weight or closed model is integrated; `POST /query` is the integration point for a future external agent.
+- **Models / LLMs:** None in permission path. Optional future agent via `POST /query`.
 - **Frameworks:** FastAPI, React + Vite
-- **BasedAI track:** Enterprise memory governance — artifact-level capabilities, lineage propagation, audit traceability
+- **BasedAI track:** Enterprise memory governance — artifact capabilities, lineage, audit
 - **Other:** SQLite, cryptography (Fernet), pytest
 
 ## What's next
 
-- Wire an actual open-weight agent that calls `POST /query` before generation
-- PostgreSQL, KMS-backed encryption, token rotation
-- Live demo deploy on Vercel
+- Open-weight science agent calling `POST /query` before summarisation
+- Live Vercel deploy + demo video
+- PostgreSQL, KMS for production
 
 ## License
 
@@ -88,4 +67,4 @@ MIT — BioVault team. Hackathon MVP only.
 
 ---
 
-> 🔒 Never commit secrets. Use `.env.example` locally. See [../../../SECURITY.md](../../../SECURITY.md).
+> 🔒 Never commit secrets. See [../../../SECURITY.md](../../../SECURITY.md).
