@@ -7,6 +7,8 @@
 
 > Educational prototype only — not production security or clinical decision support.
 
+**Live demo:** https://biovault-mauve.vercel.app
+
 ---
 
 ## One-line pitch
@@ -174,7 +176,7 @@ Copy `.env.example` to `.env` at the submission root for local CORS overrides (o
 
 | Asset | Link |
 |---|---|
-| **Live demo URL** | _TBD — add deployed Vercel/Render URL before submission deadline_ |
+| **Live demo URL** | https://biovault-mauve.vercel.app |
 | **Demo video (≤3 min)** | _TBD — biotech walkthrough: regulatory allow → CRO deny → adverse-event revoke → quarantine → audit_ |
 | **Screenshots** | _TBD — CRO deny panel, quarantine badge, audit row with `request_id`_ |
 
