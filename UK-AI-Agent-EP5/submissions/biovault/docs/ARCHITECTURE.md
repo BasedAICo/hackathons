@@ -4,12 +4,7 @@
 
 BioVault is a deterministic, LLM-free capability enforcement layer that sits between AI agents and a shared artifact store. The model — any open-weight runtime — is outside the enforcement boundary. It only sees content the gate has already authorised.
 
-BioVault ships with two demo scenarios:
-
-- **Biotech / AI science** (default): Pharma R&D — BVK-14 kinase program. An AI science agent derives a Phase II readiness memo; when the adverse-event source is revoked for data integrity, the derived memo and all its children are quarantined. External CRO is denied the derived memo.
-- **SME / company-memory** (cross-industry): Payroll-leakage parallel for the BasedAI workshop — same engine, different seed data.
-
-Both scenarios use the same permission engine, the same lineage model, and the same audit infrastructure.
+The demo seed is the **BVK-14 kinase programme** — pharma R&D memory governance for AI science agents.
 
 ---
 
@@ -41,7 +36,7 @@ BioVault uses one canonical store. Every principal reads the same artifact under
 
 ---
 
-## Biotech scenario: principals and artifacts (default)
+## Biotech demo: principals and artifacts
 
 ### Principals
 
@@ -64,20 +59,6 @@ adverse_event_memo  ──┘
 ```
 
 Revoking `adverse_event_memo` quarantines `phase2_readiness_memo` and every artifact derived from it.
-
----
-
-## SME scenario: principals and artifacts (cross-industry)
-
-Same permission engine — BasedAI workshop parallel. Seed with `POST /seed?scenario=sme`.
-
-| ID | Name | Role | Notes |
-|---|---|---|---|
-| `u_owner` | Alex Kim | Owner | Full authority |
-| `u_marketing` | Morgan Chen | Marketing | Denied `q3_growth_margin_report` |
-| `u_finance` | Jordan Lee | Finance | Allowed Q3 report until payroll revoked |
-
-Lineage: `campaign_cost_summary` + `vendor_contracts` + `payroll_salary_register` → `q3_growth_margin_report`. Revoking payroll quarantines the derived report.
 
 ---
 
@@ -248,7 +229,7 @@ CREATE INDEX IF NOT EXISTS idx_users_token
 | SHA-256 token hash only stored | Eliminates token leakage via DB read |
 | Lineage integrity on every read | Ensures revocation effect is felt at read time, not just derivation time |
 | BFS quarantine on revoke | O(n) where n is number of descendants; consistent regardless of depth |
-| Scenario-aware seeding via `?scenario=` | Same permission engine; different artifact graph demonstrates generality |
+| Single biotech seed via `POST /seed` | BVK-14 demo graph for AI science agent memory governance |
 | SQLite for demo | Zero-infrastructure; replace with PostgreSQL for production concurrency |
 | No model in permission path | Permission decisions must be auditable, reproducible, and deterministic |
 | `POST /query` as model gate | Single choke point; all agent access goes through the same enforcement stack |
@@ -284,4 +265,4 @@ else:
     # reason: "missing_capability_grant" (or "derived_from_revoked_source" after adverse-event revocation)
 ```
 
-The capability token is issued at seed time (`POST /seed?scenario=biotech`) or via a grant (`POST /artifacts/{id}/grant`) and is passed to the agent by the platform layer. The model itself never holds or manages tokens.
+The capability token is issued at seed time (`POST /seed`) or via a grant (`POST /artifacts/{id}/grant`) and is passed to the agent by the platform layer. The model itself never holds or manages tokens.

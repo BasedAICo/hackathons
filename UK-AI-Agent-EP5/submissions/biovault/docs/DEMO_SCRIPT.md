@@ -2,9 +2,7 @@
 
 > Audience: Hackathon judges · **BasedAI Enterprise Memory Governance at Scale**
 
-**BioVault is AI science / biotech R&D memory governance.** The default demo is the BVK-14 kinase program: derived Phase II memos, external CRO denial, adverse-event revocation with lineage quarantine.
-
-The SME payroll scenario is a **cross-industry proof** (same engine) — use only if a judge asks “does this generalise?”
+**BioVault is lineage-secured artifact memory for AI science agents.** The demo is the BVK-14 kinase programme: derived Phase II memos, external CRO denial, adverse-event revocation with lineage quarantine.
 
 ---
 
@@ -12,59 +10,59 @@ The SME payroll scenario is a **cross-industry proof** (same engine) — use onl
 
 1. Backend: `uvicorn app.main:app --reload` (port 8000)
 2. Frontend: `npm run dev` (port 5173)
-3. Open `http://localhost:5173` — **biotech auto-seeds on load**
+3. Open `http://localhost:5173` — biotech demo auto-seeds on load
 4. If empty, click **↺ Seed / Reset Demo**
 5. Point to **Flow Banner**: `Bearer token → resolve_principal() → evaluate_access() → log_audit() → Decrypt (allow only)` — no LLM in this chain
 
 ---
 
-## Default scenario: BVK-14 pharma R&D
-
-### The problem (15 sec)
+## The problem (15 sec)
 
 > "An AI science agent synthesises a Phase II Readiness Memo from toxicity data, SAR tables, and an adverse-event memo. An external CRO must not access that derived memo. When the adverse-event source is revoked for data integrity, every derived clinical artifact that included it must quarantine — automatically, auditable, without routing access decisions through an LLM."
 
 ### Why NOT the alternatives?
 
-Point to **Comparison Cards** (biotech copy):
+Point to **Comparison Cards**:
 
-- **Silo copies:** Stale adverse-event copies in partner folders — revoke the canonical source, copies persist
-- **LLM filtering:** Token-heavy, non-deterministic, not a security boundary
-- **BioVault:** One R&D store, capability per artifact, lineage propagation, 0 model tokens in permission path
+- **Silo copies:** Duplicate lab, CRO, regulatory, and clinical files into separate folders — revoke the canonical source, stale copies persist
+- **LLM filtering:** Token-heavy sensitivity filtering over clinical/scientific content — extra model calls, non-deterministic, not a security boundary
+- **BioVault:** One shared scientific memory, capability per artifact, lineage propagation, **0 model tokens in permission path**
 
 ---
 
-## 2-minute demo script (biotech)
+## 2-minute demo script (8 steps)
 
 ### [0:00–0:15] Intro
 
-> "BioVault governs what AI science agents retrieve from shared R&D memory. I'll show you deterministic allow/deny on a derived Phase II memo — and what happens when we revoke an adverse-event source."
+> "BioVault secures AI-generated scientific artifacts by carrying source permissions through lineage. I'll show deterministic allow/deny on a derived Phase II memo — and what happens when we revoke an adverse-event source."
 
-### [0:15–0:30] Step 1 — CEO opens Phase II Readiness Memo (ALLOW)
+### [0:15–0:25] Step 1 — Regulatory Lead opens Phase II Readiness Memo (ALLOW)
 
 Click **Step 1**.
 
-> "Avery Chen, CEO. Capability token resolved. Read grant on `phase2_readiness_memo`. ALLOW — content decrypted."
+> "Nora Singh, Regulatory Lead. Capability token resolved. Read grant on `phase2_readiness_memo`. ALLOW — content decrypted."
 
 Green `allow` banner.
 
-### [0:30–0:45] Step 2 — External CRO attempts same memo (DENY)
+### [0:25–0:35] Step 2 — External CRO attempts same memo (DENY)
 
 Click **Step 2**.
 
 > "Owen Brooks, External CRO. Same artifact. No capability grant. DENY — `missing_capability_grant`. No clinical content returned."
 
-Red `deny` banner. Empty content.
+Red `deny` banner. Empty content panel.
 
 > **Key point:** Deterministic check on artifact ID — not LLM sensitivity filtering.
 
-### [0:45–1:00] Step 3 — Regulatory Lead opens memo (ALLOW)
+### [0:35–0:45] Step 3 — Inspect lineage
 
 Click **Step 3**.
 
-> "Nora Singh, Regulatory Lead — has read grant. ALLOW. Same pipeline, different token."
+> "Four parents feed the derived memo: public target paper, internal SAR table, toxicity report, and adverse-event memo. Lineage is checked on every read — not just at derivation time."
 
-### [1:00–1:20] Step 4 — Revoke Adverse Event Memo
+Point to **Lineage** panel.
+
+### [0:45–1:00] Step 4 — Revoke Adverse Event Memo
 
 Click **Step 4**.
 
@@ -72,39 +70,35 @@ Click **Step 4**.
 
 Amber `quarantined` badges. Status message with quarantined IDs.
 
-### [1:20–1:35] Step 5 — CEO denied on Phase II memo
+### [1:00–1:10] Step 5 — Phase II memo quarantined
 
 Click **Step 5**.
 
-> "CEO — who was allowed a minute ago — is now DENIED. `derived_from_revoked_source`. Lineage sealed the derived memo when the source was revoked."
+> "Phase II readiness memo and descendants now show quarantined status. Revoked adverse_event_memo sealed the derived lineage chain."
 
-### [1:35–2:00] Step 6 — Audit + compliance matrix
+### [1:10–1:20] Step 6 — CEO denied on Phase II memo
 
-Click **Step 6**. Scroll to **Audit Log**.
+Click **Step 6**.
 
-> "Every decision logged: `request_id`, principal, operation, decision, reason, latency_ms. P99 permission check is live — single-digit ms because it's indexed SQL, not a model."
+> "CEO — who was allowed earlier — is now DENY. `derived_from_revoked_source`. Lineage sealed the derived memo when the source was revoked. No plaintext returned."
 
-Point to TESTED / LIVE badges on compliance matrix.
+### [1:20–1:40] Step 7 — Audit log
+
+Click **Step 7**. Scroll to **Audit Log**. Expand a row.
+
+> "Every decision logged: `request_id`, principal, artifact, operation, decision, reason, purpose, latency_ms. Click any row for structured provenance."
+
+### [1:40–2:00] Step 8 — Permission path evidence
+
+Click **Step 8**. Point to **Compliance Matrix** and **Permission Latency**.
+
+> "Pure SQL permission check — 0 model tokens, no LLM permission decision. P99 under 200 ms. Optional open-weight model only runs after authorization via POST /query."
 
 ---
 
-## 30-second fallback (biotech)
+## 30-second fallback
 
 > "BioVault secures AI science memory in three ways: **One** — access is per artifact and token, not job title — CRO denied, Regulatory allowed. **Two** — lineage: revoke adverse-event data, Phase II memo quarantines automatically. **Three** — zero model tokens in the permission path — pure SQL, auditable, any agent calls POST /query before generation."
-
----
-
-## Appendix: cross-industry SME demo (30 sec)
-
-Switch to **Cross-industry (SME / payroll)** in the scenario switcher.
-
-> "Same engine, enterprise memory parallel: Marketing denied a payroll-mixed Q3 margin report; revoke payroll → report quarantined. BasedAI workshop use case — BioVault's core is R&D governance above."
-
-| Step | Who | Expected |
-|---|---|---|
-| Marketing | Campaign costs | ALLOW |
-| Marketing | Q3 margin report | DENY |
-| Finance | Q3 margin report | ALLOW → then DENY after payroll revoke |
 
 ---
 
@@ -125,5 +119,5 @@ A: `POST /query` is the agent gate — call before generation. No model imported
 **Q: Performance?**  
 A: Indexed lineage traversal. P99 under 200ms in tests (`test_permission_latency_p99_under_200ms`).
 
-**Q: Does it work outside biotech?**  
-A: Yes — switch to SME scenario. Same engine, different seed graph.
+**Q: Does it generalise to other domains?**  
+A: The engine is domain-agnostic — capabilities, lineage, revocation, audit. BioVault's product focus is AI science / biotech R&D memory.

@@ -1,70 +1,147 @@
-# BioVault
+# BioVault — lineage-secured memory for AI science agents
 
-**Team:** BioVault  
-**Members:** [@pkaysantana](https://github.com/pkaysantana) (Don Aborah)  
-**Event/Track:** UK-AI-Agent-EP5 — BasedAI track (Enterprise Memory Governance at Scale)
+**Capability-bound artifact memory with deterministic access, lineage propagation, and full audit — no LLM in the permission path.**
 
-## What it does
+Hackathon MVP · **BasedAI Enterprise Memory Governance at Scale**
 
-BioVault governs **AI science / biotech R&D memory**: shared artifacts (toxicity reports, adverse-event memos, SAR tables) from which AI agents derive clinical memos. Role-based access cannot answer: *should an external CRO's agent retrieve a Phase II readiness memo derived from a source we just revoked for data integrity?*
+**Team:** BioVault · [@pkaysantana](https://github.com/pkaysantana) (Don Aborah)  
+**Submission:** [BasedAICo/hackathons#3](https://github.com/BasedAICo/hackathons/pull/3) · [pkaysantana/hackathons](https://github.com/pkaysantana/hackathons)
 
-BioVault implements a **permission gate**:
-
-- **Capability** per `(principal, artifact, operation)` — not role alone
-- **Lineage** on every derived artifact
-- **Revocation** quarantines all derived descendants (BFS)
-- **Audit** on every allow/deny with `request_id`
-
-No LLM in the permission path. FastAPI + React demo UI. `POST /query` is the hook for external agents.
-
-**Default demo (BVK-14):** CEO reads Phase II memo → CRO **denied** → Regulatory allowed → CEO revokes adverse-event memo → Phase II memo **quarantined**.
-
-**Cross-industry:** SME payroll scenario via UI switcher or `POST /seed?scenario=sme` — same engine.
-
-## Demo
-
-- 🎥 Video: _not yet recorded_ (record biotech walkthrough)
-- 🌐 Live demo: _not yet deployed_ — [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
-- 🖼️ Screenshots: CRO deny, quarantine badge, audit log — from biotech flow
-
-## How to run it
-
-```powershell
-cd backend && pip install -r requirements-dev.txt && uvicorn app.main:app --reload
-cd frontend && npm install && npm run dev
-```
-
-Open `http://localhost:5173` — biotech seeds on load. `python -m pytest -q` in backend.
-
-## How it works
-
-```
-Caller (UI or POST /query) + Bearer token
-        ▼
-FastAPI — resolve_principal → evaluate_access → log_audit → decrypt if allow
-        ▼
-SQLite — artifacts, grants, lineage_edges, audit_events
-```
-
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md)
-
-## Tech & sponsor APIs used
-
-- **Models / LLMs:** None in permission path. Optional future agent via `POST /query`.
-- **Frameworks:** FastAPI, React + Vite
-- **BasedAI track:** Enterprise memory governance — artifact capabilities, lineage, audit
-- **Other:** SQLite, cryptography (Fernet), pytest
-
-## What's next
-
-- Open-weight science agent calling `POST /query` before summarisation
-- Live Vercel deploy + demo video
-- PostgreSQL, KMS for production
-
-## License
-
-MIT — BioVault team. Hackathon MVP only.
+> Educational prototype only — not production security or clinical decision support.
 
 ---
 
-> 🔒 Never commit secrets. See [../../../SECURITY.md](../../../SECURITY.md).
+## The AI-science problem
+
+AI science agents generate **Phase II readiness memos**, **CRO handoffs**, **regulatory summaries**, and **scientific reports** from sensitive source documents — SAR tables, toxicity reports, adverse-event memos, and public target biology.
+
+When a source is revoked for data integrity, every **derived artifact** that included it must quarantine automatically. External CROs must not read clinical memos they were never granted. Duplicating files into lab, CRO, and regulatory silos creates drift — revoke the canonical source and stale copies persist.
+
+---
+
+## Approach
+
+BioVault is a **permission gate + demo dashboard** for shared scientific artifact memory. It is **not** an AI agent and **does not call any LLM**.
+
+| Mechanism | What it does |
+|---|---|
+| **Capability tokens** | Bearer token → `(principal, artifact, operation)` grant before any read |
+| **Deterministic access** | Pure SQL permission check — 0 model tokens, sub-millisecond |
+| **Lineage** | Derived artifacts record parent sources; every read re-checks parent integrity |
+| **Revocation propagation** | Revoke a source → BFS quarantine of all descendants |
+| **Audit** | Every decision logged with `request_id`, principal, operation, reason, latency, structured provenance |
+
+---
+
+## Demo: BVK-14 kinase programme
+
+Seed with **Seed / Reset Demo** or `POST /seed`.
+
+**Story:** An AI science program (kinase BVK-14) derives a **Phase II Readiness Memo** from source documents including an **Adverse Event Memo**. External CRO must not access the derived memo. When the adverse-event source is revoked, the Phase II memo quarantines automatically.
+
+```
+public_target_paper ──┐
+internal_sar_table  ──┼──► phase2_readiness_memo  (derived, confidential)
+toxicity_report     ──┤
+adverse_event_memo  ──┘
+```
+
+| Step | Principal | Action | Result |
+|---|---|---|---|
+| 1 | Nora Singh (Regulatory Lead) | Read Phase II Readiness Memo | **ALLOW** |
+| 2 | Owen Brooks (External CRO) | Read Phase II Readiness Memo | **DENY** — no capability grant, no plaintext |
+| 3 | — | Inspect lineage | Four parents → derived memo |
+| 4 | Avery Chen (CEO) | Revoke Adverse Event Memo | Quarantine propagates to derived memos |
+| 5 | — | Phase II memo quarantined | Amber badges on derived chain |
+| 6 | CEO | Read Phase II memo again | **DENY** — `derived_from_revoked_source` |
+| 7 | — | Audit log | `request_id`, principal, provenance, latency |
+| 8 | — | Permission path | Deterministic SQL · 0 model tokens |
+
+Full walkthrough: [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md)
+
+---
+
+## BasedAI requirement mapping
+
+| BasedAI requirement | BioVault evidence |
+|---|---|
+| Deterministic retrieval-layer enforcement | `evaluate_access()` — indexed SQL, no model |
+| No LLM in permission path | 0 model tokens; permission path is token-free |
+| Audit logs | Every allow/deny with `request_id` and structured detail |
+| Sub-200 ms evidence | `GET /metrics/permission-latency` — P99 under 200 ms in tests |
+| Derived memory lineage | `lineage_edges` with source hashes; checked on every read |
+| Revocation propagation | BFS quarantine on revoke; `derived_from_revoked_source` deny |
+| Open-weight compatibility | `POST /query` gate — any model calls after authorization only |
+
+---
+
+## Open-weight model compliance
+
+The **permission path is model-free**. No closed-model dependencies. Optional generation **after** authorization can use open-weight models (Qwen, Llama, Mistral, GLM, BGE, E5, Nomic, etc.) via `POST /query`:
+
+```python
+# Agent calls BioVault before passing content to any model
+result = httpx.post("/query", json={"artifact_id": "phase2_readiness_memo", ...},
+                    headers={"Authorization": f"Bearer {cro_token}"})
+if result["decision"] != "allow":
+    # Do not call the model — surface denial to user
+    ...
+```
+
+Nothing in this repo calls a model yet; the hook is the integration point.
+
+---
+
+## How to run
+
+```powershell
+# Backend
+cd backend
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements-dev.txt
+uvicorn app.main:app --reload
+
+# Frontend
+cd frontend
+npm install
+npm run dev
+```
+
+Open `http://localhost:5173` — BVK-14 demo loads automatically.
+
+### API (`backend/app/main.py`)
+
+| Method | Path | Auth | Purpose |
+|---|---|---|---|
+| GET | `/health` | — | Liveness |
+| POST | `/seed` | — | Reset DB; biotech demo; returns bearer tokens once |
+| GET | `/artifacts/{id}` | Bearer | Read with permission check + audit |
+| POST | `/query` | Bearer | Agent gate — content only if allowed |
+| POST | `/artifacts/{id}/revoke` | Bearer | Revoke source + quarantine descendants |
+| GET | `/lineage/{id}`, `/audit`, `/metrics/permission-latency` | — | Lineage, audit, latency |
+
+### Tests
+
+```powershell
+cd backend
+python -m pytest -q
+```
+
+Planning: [docs/TODO.md](docs/TODO.md) · [docs/BEST_CASE.md](docs/BEST_CASE.md) · Architecture: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+
+---
+
+## Limitations
+
+- **Prototype** — educational demo, not production security
+- **Local SQLite** — single-process; replace with PostgreSQL for production
+- **Simulated revocation/ACL events** — no external IAM or HSM/key management
+- **No full Hirebase integration** — capability tokens issued at seed time
+- **No LLM wired up** — permission path is complete; agent generation is optional stretch
+
+---
+
+## License
+
+MIT — BioVault team. See [LICENSE](LICENSE).
