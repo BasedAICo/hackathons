@@ -6,10 +6,10 @@ BioVault is a deterministic, LLM-free capability enforcement layer that sits bet
 
 BioVault ships with two demo scenarios:
 
-- **SME / company-memory** (default): Payroll-leakage prevention. A marketing AI agent asks for Q3 cost data and must not receive a derived margin report that includes payroll-sensitive lineage.
-- **Biotech / AI science** (secondary): Pharma R&D. An AI science agent derives a Phase II readiness memo; when the adverse-event source is revoked for data integrity reasons, the derived memo and all its children are quarantined.
+- **Biotech / AI science** (default): Pharma R&D — BVK-14 kinase program. An AI science agent derives a Phase II readiness memo; when the adverse-event source is revoked for data integrity, the derived memo and all its children are quarantined. External CRO is denied the derived memo.
+- **SME / company-memory** (cross-industry): Payroll-leakage parallel for the BasedAI workshop — same engine, different seed data.
 
-Both scenarios use the same permission engine, the same lineage model, and the same audit infrastructure. The difference is only the seeded dataset.
+Both scenarios use the same permission engine, the same lineage model, and the same audit infrastructure.
 
 ---
 
@@ -33,53 +33,15 @@ BioVault's permission path:
 
 The alternative approach — copying files into per-team folders — breaks governance:
 
-1. Finance copies the payroll register into a "shared" folder for the analyst.
-2. The original is revoked. The copy persists. Governance sees only the original.
-3. The analyst's AI agent retrieves the copy. Payroll data leaks.
+1. Regulatory copies an adverse-event memo into a "board" folder for review.
+2. The canonical source is revoked. The copy persists.
+3. An external CRO's AI agent retrieves the copy. Clinical data leaks.
 
-BioVault uses one canonical store. Every team reads the same artifact under their own capability grant. No copies means no drift. Revoking the payroll register propagates through lineage to every derived artifact that included it — through one BFS traversal on one graph, not by chasing copies.
-
----
-
-## SME scenario: principals and artifacts
-
-### Principals
-
-| ID | Name | Role | Capability grants |
-|---|---|---|---|
-| `u_owner` | Alex Kim | Owner | All ops on all artifacts |
-| `u_finance` | Jordan Lee | Finance Lead | `read` on payroll register, Q3 report, handbook |
-| `u_marketing` | Morgan Chen | Marketing Manager | `read` on campaign costs, vendor contracts, customer feedback, handbook |
-| `u_hr` | Riley Park | HR Lead | `read` on payroll register, handbook |
-| `u_ops` | Sam Rivera | Operations Manager | `read` on vendor contracts, handbook |
-| `u_contractor` | Casey Jones | External Contractor | `read` on handbook only |
-
-### Artifacts
-
-| ID | Title | Type | Sensitivity |
-|---|---|---|---|
-| `campaign_cost_summary` | Campaign Cost Summary | source | internal |
-| `vendor_contracts` | Vendor Contracts | source | internal |
-| `payroll_salary_register` | Payroll Salary Register | source | confidential |
-| `shared_customer_feedback` | Customer Feedback Digest | source | internal |
-| `company_handbook` | Company Handbook | source | public |
-| `q3_growth_margin_report` | Q3 Growth Margin Report | **derived** | confidential |
-
-### Lineage
-
-```
-campaign_cost_summary ──┐
-vendor_contracts      ──┼──► q3_growth_margin_report
-payroll_salary_register─┘
-```
-
-The leakage case: Marketing has `read` on `campaign_cost_summary` and `vendor_contracts` individually, but lacks a capability grant on `q3_growth_margin_report`. Even if Marketing could enumerate sources, they cannot read the governed derived artifact that synthesises those sources with payroll data.
-
-Payroll revocation propagates to `q3_growth_margin_report` through lineage — Finance is also denied after revocation.
+BioVault uses one canonical store. Every principal reads the same artifact under their own capability grant. Revoking `adverse_event_memo` propagates through lineage to every derived artifact that included it.
 
 ---
 
-## Biotech scenario: principals and artifacts (secondary)
+## Biotech scenario: principals and artifacts (default)
 
 ### Principals
 
@@ -105,12 +67,26 @@ Revoking `adverse_event_memo` quarantines `phase2_readiness_memo` and every arti
 
 ---
 
+## SME scenario: principals and artifacts (cross-industry)
+
+Same permission engine — BasedAI workshop parallel. Seed with `POST /seed?scenario=sme`.
+
+| ID | Name | Role | Notes |
+|---|---|---|---|
+| `u_owner` | Alex Kim | Owner | Full authority |
+| `u_marketing` | Morgan Chen | Marketing | Denied `q3_growth_margin_report` |
+| `u_finance` | Jordan Lee | Finance | Allowed Q3 report until payroll revoked |
+
+Lineage: `campaign_cost_summary` + `vendor_contracts` + `payroll_salary_register` → `q3_growth_margin_report`. Revoking payroll quarantines the derived report.
+
+---
+
 ## Request flow
 
 ```
 Agent runtime (any model)
 │
-│  POST /query  { "artifact_id": "q3_growth_margin_report", "purpose": "agent_retrieval" }
+│  POST /query  { "artifact_id": "phase2_readiness_memo", "purpose": "agent_retrieval" }
 │  Authorization: Bearer <capability_token>
 │
 ▼
@@ -298,15 +274,14 @@ def retrieve_artifact(artifact_id: str, capability_token: str) -> dict:
     r.raise_for_status()
     return r.json()
 
-# SME example — Marketing agent asks for the Q3 report:
-result = retrieve_artifact("q3_growth_margin_report", marketing_token)
+# Biotech example — CRO agent attempts Phase II memo:
+result = retrieve_artifact("phase2_readiness_memo", cro_token)
 if result["decision"] == "allow":
     context = result["plaintext_content"]
     # pass context to model.generate(...)
 else:
-    # surface denial to user; do not call model with this artifact
     print(f"Access denied: {result['reason']} ({result['request_id']})")
-    # reason: "missing_capability_grant" (or "derived_from_revoked_source" after payroll revocation)
+    # reason: "missing_capability_grant" (or "derived_from_revoked_source" after adverse-event revocation)
 ```
 
-The capability token is issued at seed time (`POST /seed?scenario=sme`) or via a grant (`POST /artifacts/{id}/grant`) and is passed to the agent by the platform layer. The model itself never holds or manages tokens.
+The capability token is issued at seed time (`POST /seed?scenario=biotech`) or via a grant (`POST /artifacts/{id}/grant`) and is passed to the agent by the platform layer. The model itself never holds or manages tokens.

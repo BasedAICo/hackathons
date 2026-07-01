@@ -197,7 +197,7 @@ const STATIC_CHECKS: Array<{
   {
     label: "Source revocation propagation",
     detail: "BFS quarantine traverses all active descendants on revoke",
-    evidence: "test: test_multi_level_revocation_propagation + test_sme_payroll_revocation_quarantines_derived_report",
+    evidence: "test: test_multi_level_revocation_propagation (+ SME: test_sme_payroll_revocation_quarantines_derived_report)",
     badge: "TESTED",
     liveKey: "revocation",
   },
@@ -318,26 +318,27 @@ function ConceptCards() {
 // Comparison cards — BasedAI workshop context
 // ---------------------------------------------------------------------------
 
-function ComparisonCards() {
+function ComparisonCards({ scenario }: { scenario: Scenario }) {
+  const siloOld =
+    scenario === "biotech"
+      ? "R&D teams copy adverse-event memos into partner or board folders. Revoke the canonical source — stale copies persist. External CROs may read derived clinical memos built from data you thought was sealed."
+      : "Finance and Marketing each get a copy of shared files. Changes don't sync. A payroll file copied into a \"shared\" folder becomes invisible to governance. Silo drift makes revocation impossible to enforce.";
+  const siloNew =
+    scenario === "biotech"
+      ? "One canonical R&D artifact store. CEO, Regulatory, Research, and CRO each read under their own capability grant. Revoking adverse_event_memo propagates to every derived Phase II memo through lineage — not by chasing copies."
+      : "A single canonical store. Every team reads the same artifact under their own capability grant. Revoking payroll propagates instantly to every derived artifact that included it — through lineage, not by chasing copies.";
+
   return (
     <section className="card comparison-card">
       <h2>Why Not the Alternatives?</h2>
       <div className="comparison-grid">
         <div className="comparison-col comparison-old">
           <div className="comparison-header">⚠ Old approach: duplicate into team silos</div>
-          <p>
-            Finance and Marketing each get a copy of shared files. Changes don't sync.
-            A payroll file copied into a "shared" folder becomes invisible to governance.
-            Silo drift makes revocation impossible to enforce — you cannot revoke a copy you don't know exists.
-          </p>
+          <p>{siloOld}</p>
         </div>
         <div className="comparison-col comparison-new">
-          <div className="comparison-header">✓ BioVault: one global artifact memory</div>
-          <p>
-            A single canonical store. Every team reads the same artifact under their own capability grant.
-            No copies, no drift. Revoking payroll propagates instantly to every derived artifact
-            that included it — through lineage, not by chasing copies.
-          </p>
+          <div className="comparison-header">✓ BioVault: one canonical artifact memory</div>
+          <p>{siloNew}</p>
         </div>
         <div className="comparison-col comparison-old">
           <div className="comparison-header">⚠ Old approach: LLM sensitivity filtering</div>
@@ -434,7 +435,7 @@ const BIOTECH_DEMO_STEPS = [
 // ---------------------------------------------------------------------------
 
 export default function App() {
-  const [scenario, setScenario] = useState<Scenario>("sme");
+  const [scenario, setScenario] = useState<Scenario>("biotech");
   const [users, setUsers] = useState<User[]>([]);
   const [artifacts, setArtifacts] = useState<Artifact[]>([]);
   const [audit, setAudit] = useState<AuditEvent[]>([]);
@@ -781,7 +782,7 @@ export default function App() {
   }
 
   useEffect(() => {
-    seedDemo("sme");
+    seedDemo("biotech");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -800,22 +801,22 @@ export default function App() {
       <header className="hero">
         <div className="hero-text">
           <p className="eyebrow">BioVault · BasedAI Enterprise Memory Governance at Scale</p>
-          {scenario === "sme" ? (
+          {scenario === "biotech" ? (
             <>
-              <h1>Prevent AI agents from leaking company memory — like payroll — into marketing answers.</h1>
+              <h1>Capability-secured artifact memory for AI science agents</h1>
               <p>
-                One global artifact store. Deterministic capability check at every read.
-                Payroll revocation propagates through lineage to derived reports — no copies, no drift, no LLM in the permission path.
-                Every decision is audited.
+                Govern what AI science agents retrieve from shared R&D memory. When an adverse-event
+                source is revoked for data integrity, every derived Phase II memo is quarantined —
+                external CROs denied, every decision audited, no LLM in the permission path.
               </p>
             </>
           ) : (
             <>
-              <h1>Capability-secured artifact memory for AI science agents</h1>
+              <h1>Same engine — enterprise memory (BasedAI workshop parallel)</h1>
               <p>
-                A deterministic, lineage-aware permission layer that prevents AI agents from leaking
-                sensitive biotech data. Identity proven by unforgeable capability tokens — no LLM in the
-                permission path, every decision audited.
+                Cross-industry proof: payroll revocation propagates to derived margin reports.
+                Marketing denied the payroll-mixed artifact. Same capability model, same lineage
+                propagation — different seed data.
               </p>
             </>
           )}
@@ -823,16 +824,6 @@ export default function App() {
         <div className="actions">
           <div className="scenario-switcher">
             <span className="scenario-label">Demo scenario:</span>
-            <button
-              className={`scenario-btn${scenario === "sme" ? " scenario-active" : ""}`}
-              disabled={loading}
-              onClick={() => {
-                setScenario("sme");
-                seedDemo("sme");
-              }}
-            >
-              SME / Company Memory
-            </button>
             <button
               className={`scenario-btn${scenario === "biotech" ? " scenario-active" : ""}`}
               disabled={loading}
@@ -842,6 +833,16 @@ export default function App() {
               }}
             >
               AI Science / Biotech
+            </button>
+            <button
+              className={`scenario-btn${scenario === "sme" ? " scenario-active" : ""}`}
+              disabled={loading}
+              onClick={() => {
+                setScenario("sme");
+                seedDemo("sme");
+              }}
+            >
+              Cross-industry (SME / payroll)
             </button>
           </div>
           <div className="action-row">
@@ -870,14 +871,14 @@ export default function App() {
       <ConceptCards />
 
       {/* Comparison cards — why not silos / why not LLM filtering */}
-      <ComparisonCards />
+      <ComparisonCards scenario={scenario} />
 
       {/* Demo flow */}
       <section className="card demo-steps">
         <h2>
           Demo Flow{" "}
           <span className="demo-sub">
-            {scenario === "sme" ? "SME · payroll leakage story" : "AI Science · pharma R&D story"} · Click steps in order
+            {scenario === "biotech" ? "BVK-14 · pharma R&D story" : "Cross-industry · payroll leakage"} · Click steps in order
           </span>
         </h2>
         <ol className="step-list">

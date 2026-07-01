@@ -624,7 +624,12 @@ def health() -> dict[str, str]:
 # ---------------------------------------------------------------------------
 
 def _seed_biotech(conn: sqlite3.Connection) -> tuple[int, int, dict[str, str]]:
-    """Seed the biotech / pharma R&D scenario (AI-science secondary demo)."""
+    """Seed the biotech / pharma R&D scenario (default demo).
+
+    BVK-14 kinase program: AI science agents derive a Phase II readiness memo from
+    source documents including an adverse-event memo. External CRO is denied the
+    derived memo; revoking the adverse-event source quarantines downstream artifacts.
+    """
     users = [
         ("u_ceo", "Avery Chen", "CEO", "Leadership"),
         ("u_research", "Maya Patel", "Research Scientist", "R&D"),
@@ -696,9 +701,10 @@ def _seed_biotech(conn: sqlite3.Connection) -> tuple[int, int, dict[str, str]]:
 
 
 def _seed_sme(conn: sqlite3.Connection) -> tuple[int, int, dict[str, str]]:
-    """Seed the SME company-memory payroll-leakage scenario (default demo).
+    """Seed the SME company-memory payroll-leakage scenario (cross-industry demo).
 
-    The leakage case: Marketing has read access to campaign costs and vendor
+    Same permission engine as biotech — illustrates BasedAI workshop use case:
+    Marketing has read access to campaign costs and vendor
     contracts, but must NOT receive the Q3 Growth Margin Report because it is a
     governed derived artifact whose lineage includes the payroll salary register.
     Marketing lacks a capability grant on that derived artifact, and payroll
@@ -784,12 +790,12 @@ def _seed_sme(conn: sqlite3.Connection) -> tuple[int, int, dict[str, str]]:
 
 
 @app.post("/seed")
-def seed(scenario: str = Query(default="sme")) -> dict[str, Any]:
+def seed(scenario: str = Query(default="biotech")) -> dict[str, Any]:
     """Reset all tables and load a demo dataset.
 
     Supported scenarios:
-    - ``sme``     (default): Company-memory payroll-leakage demo for BasedAI workshop.
-    - ``biotech``: AI-science pharma R&D kinase-drug-program demo.
+    - ``biotech`` (default): Pharma R&D — BVK-14 kinase program, Phase II memo, CRO deny.
+    - ``sme``: Cross-industry payroll-leakage demo (BasedAI workshop parallel).
 
     Returns plaintext principal tokens ONCE (demo only). Only hashes are stored.
     """
@@ -805,14 +811,16 @@ def seed(scenario: str = Query(default="sme")) -> dict[str, Any]:
             DELETE FROM users;
             """
         )
-        if scenario == "biotech":
-            user_count, artifact_count, tokens = _seed_biotech(conn)
-        else:
+        if scenario == "sme":
             user_count, artifact_count, tokens = _seed_sme(conn)
+            scenario_name = "sme"
+        else:
+            user_count, artifact_count, tokens = _seed_biotech(conn)
+            scenario_name = "biotech"
 
     return {
         "status": "seeded",
-        "scenario": "biotech" if scenario == "biotech" else "sme",
+        "scenario": scenario_name,
         "users": user_count,
         "artifacts": artifact_count,
         "tokens": tokens,
